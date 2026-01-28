@@ -271,23 +271,60 @@
         if(tab === 'history') loadHistory();
     }
 
-    async function loadHistory() {
-        const list = document.getElementById('historyList');
-        list.innerHTML = "<p style='text-align:center'>Loading database...</p>";
-        try {
-            const res = await fetch('https://vito-unpilfered-nonethically.ngrok-free.dev/history', {
-                headers: { 'ngrok-skip-browser-warning': 'true' }
-            });
-            const data = await res.json();
-            list.innerHTML = "";
-            data.forEach(item => {
-                const div = document.createElement('div');
-                div.style = "background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 5px solid " + (item.status.includes('Healthy') ? '#10b981' : '#ef4444');
-                div.innerHTML = `<strong>${item.status}</strong><br><small>${item.date}</small><p style='font-size:12px; margin:5px 0;'>${item.recommendation}</p>`;
-                list.appendChild(div);
-            });
-        } catch (e) { list.innerHTML = "History Sync Failed."; }
+   async function loadHistory() {
+    const list = document.getElementById('historyList');
+    list.innerHTML = `
+        <div style="text-align:center; padding: 20px;">
+            <i class="fas fa-sync fa-spin" style="color: var(--primary)"></i>
+            <p>Syncing with Cloud Database...</p>
+        </div>`;
+    
+    try {
+        const res = await fetch('https://vito-unpilfered-nonethically.ngrok-free.dev/history', {
+            headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
+        const data = await res.json();
+        list.innerHTML = "";
+
+        if (data.length === 0) {
+            list.innerHTML = "<p style='text-align:center; color:#94a3b8;'>No records found in database.</p>";
+            return;
+        }
+
+        data.forEach(item => {
+            const isHealthy = item.status.toLowerCase().includes('healthy');
+            const icon = isHealthy ? 'fa-check-circle' : 'fa-exclamation-triangle';
+            const color = isHealthy ? '#10b981' : '#ef4444';
+            
+            const div = document.createElement('div');
+            div.className = "history-item";
+            div.style = `border-left: 6px solid ${color}; margin-bottom: 15px;`;
+            
+            div.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <i class="fas ${icon}" style="color: ${color}"></i>
+                        <strong style="font-size: 16px; margin-left: 8px;">${item.status}</strong>
+                    </div>
+                    <span style="font-size: 10px; color: #94a3b8; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">
+                        ${item.date}
+                    </span>
+                </div>
+                <p style="font-size: 13px; color: #475569; margin: 8px 0;">${item.message || 'Analysis complete.'}</p>
+                <div style="font-size: 12px; color: ${color}; font-weight: 600; background: ${color}10; padding: 5px; border-radius: 6px;">
+                    <i class="fas fa-clipboard-check"></i> Rx: ${item.recommendation}
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    } catch (e) { 
+        list.innerHTML = `
+            <div style="text-align:center; color: var(--danger);">
+                <i class="fas fa-wifi"></i>
+                <p>Sync Failed. Check Server Connection.</p>
+            </div>`;
     }
+}
 </script>
 
 </body>
