@@ -55,11 +55,13 @@ h1 { color: #065f46; margin-bottom: 5px; }
     text-align: left;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
-.spinner {
-    animation: rotation 2s infinite linear;
-    color: #059669;
-    font-weight: bold;
+.spinner-icon {
+    display: inline-block; /* Required for rotation to work */
+    animation: rotation 1.5s infinite linear;
+    margin-right: 10px;
+    font-size: 24px;
 }
+
 @keyframes rotation {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
@@ -75,7 +77,9 @@ h1 { color: #065f46; margin-bottom: 5px; }
         <input type="file" accept="image/*" capture="camera" id="cameraInput" style="display: none;">
         <img id="preview" style="width: 100%; border-radius: 10px; display: none; margin-bottom: 15px;">
 
-<div id="loader" style="display: none; margin: 10px auto;" class="spinner">⚙️ AI is Analyzing...</div>
+<div id="loader" style="display: none; margin: 20px auto; color: #059669; font-weight: bold;">
+    <span class="spinner-icon">⚙️</span> AI is Analyzing...
+</div>
         <button class="main-btn" onclick="document.getElementById('cameraInput').click()">📸 Scan Crop</button>
 
         <div id="result">Waiting for scan...</div>
