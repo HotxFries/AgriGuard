@@ -64,7 +64,7 @@ h1 { color: #065f46; margin-bottom: 5px; }
         <p>Scan your crop to detect diseases</p>
         
         <input type="file" accept="image/*" capture="camera" id="cameraInput" style="display: none;">
-        <button **class="main-btn"** onclick="document.getElementById('cameraInput').click()">📸 Scan Crop</button>
+        <button class="main-btn" onclick="document.getElementById('cameraInput').click()">📸 Scan Crop</button>
 
         <div id="result">Waiting for scan...</div>
         <hr> <h3>📜 Past Reports</h3>
@@ -74,32 +74,30 @@ h1 { color: #065f46; margin-bottom: 5px; }
 
 
 <script>
-    const cameraInput = document.getElementById('cameraInput');
+ const cameraInput = document.getElementById('cameraInput');
     const resultDiv = document.getElementById('result');
 
     cameraInput.addEventListener('change', async function() {
-        const file = cameraInput.files[0];
+        const file = cameraInput.files[0]; // This is 'file'
         if (!file) return;
 
         resultDiv.innerText = "Sending photo to AI...";
 
-        // 1. Put the photo in a "virtual envelope"
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', file); // Use 'file' here, not 'fileInput'
 
         try {
-            // 2. Send the envelope to the /diagnose route in Python
-            const response = await fetch(' https://vito-unpilfered-nonethically.ngrok-free.app/diagnose', {
-    method: 'POST',
-    headers: {
-        'ngrok-skip-browser-warning': '69420', // This is the magic "Skip" code
-    },
-    body: formData
-});
+            // Remove the space before 'https'
+            const response = await fetch('https://vito-unpilfered-nonethically.ngrok-free.app/diagnose', {
+                method: 'POST',
+                headers: {
+                    'ngrok-skip-browser-warning': '69420',
+                },
+                body: formData
+            });
 
             const data = await response.json();
 
-            // 3. Show what the Python brain said
             resultDiv.innerHTML = `
                 <div style="color: blue; font-size: 20px;">${data.status}</div>
                 <p>${data.message}</p>
@@ -108,32 +106,33 @@ h1 { color: #065f46; margin-bottom: 5px; }
             resultDiv.innerText = "Error: Make sure Python is running!";
         }
     });
+
     async function loadHistory() {
-    const historyDiv = document.getElementById('historyList');
-    historyDiv.innerHTML = "Opening the file cabinet..."; // Temporary message
+        const historyDiv = document.getElementById('historyList');
+        historyDiv.innerHTML = "Opening the file cabinet...";
 
-    try {
-        // 1. We call the Python 'door' we just made in Step 18
-        const response = await fetch(' https://vito-unpilfered-nonethically.ngrok-free.app/history');
-        const data = await response.json();
+        try {
+            // Remove the space before 'https'
+            const response = await fetch('https://vito-unpilfered-nonethically.ngrok-free.app/history', {
+                headers: { 'ngrok-skip-browser-warning': '69420' }
+            });
+            const data = await response.json();
 
-        historyDiv.innerHTML = ""; // Clear the 'opening' message
-
-        // 2. For every scan in the list, create a little report card
-        data.forEach(scan => {
-            const card = document.createElement('div');
-            card.style = "background: #e5e7eb; padding: 10px; margin-bottom: 5px; border-radius: 5px; border-left: 5px solid #22c55e;";
-            card.innerHTML = `
-                <b>${scan.date}</b><br>
-                Status: ${scan.status}<br>
-                <small>${scan.recommendation}</small>
-            `;
-            historyDiv.appendChild(card); // Stick the card onto the screen
-        });
-    } catch (error) {
-        historyDiv.innerText = "Could not reach the cloud!";
+            historyDiv.innerHTML = "";
+            data.forEach(scan => {
+                const card = document.createElement('div');
+                card.style = "background: #white; padding: 10px; margin-bottom: 5px; border-radius: 5px; border-left: 5px solid #22c55e; border-bottom: 1px solid #ddd;";
+                card.innerHTML = `
+                    <b>${scan.date}</b><br>
+                    Status: ${scan.status}<br>
+                    <small>${scan.recommendation}</small>
+                `;
+                historyDiv.appendChild(card);
+            });
+        } catch (error) {
+            historyDiv.innerText = "Could not reach the cloud!";
+        }
     }
-}
 </script>
 </body>
 </html>
