@@ -89,10 +89,13 @@ h1 { color: #065f46; margin-bottom: 5px; }
 
         try {
             // 2. Send the envelope to the /diagnose route in Python
-            const response = await fetch('https://vito-unpilfered-nonethically.ngrok-free.dev /diagnose', {
-                method: 'POST',
-                body: formData
-            });
+            const response = await fetch(' https://vito-unpilfered-nonethically.ngrok-free.app/diagnose', {
+    method: 'POST',
+    headers: {
+        'ngrok-skip-browser-warning': '69420', // This is the magic "Skip" code
+    },
+    body: formData
+});
 
             const data = await response.json();
 
@@ -111,7 +114,7 @@ h1 { color: #065f46; margin-bottom: 5px; }
 
     try {
         // 1. We call the Python 'door' we just made in Step 18
-        const response = await fetch(' https://vito-unpilfered-nonethically.ngrok-free.dev/history');
+        const response = await fetch(' https://vito-unpilfered-nonethically.ngrok-free.app/history');
         const data = await response.json();
 
         historyDiv.innerHTML = ""; // Clear the 'opening' message
