@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriGuard AI</title>
+    <style>
+    body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    text-align: center; 
+    padding: 10px; 
+    background-color: #ecfdf5; /* Soft green background */
+    margin: 0;
+}
+
+.card { 
+    background: white; 
+    padding: 25px; 
+    border-radius: 20px; 
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    max-width: 400px; /* Makes it look like a phone app */
+    margin: 20px auto;
+}
+
+h1 { color: #065f46; margin-bottom: 5px; }
+
+.main-btn { 
+    background-color: #10b981; 
+    color: white; 
+    border: none; 
+    padding: 18px 40px; 
+    border-radius: 50px; 
+    font-size: 20px; 
+    font-weight: bold;
+    cursor: pointer; 
+    width: 100%; /* Full width button for thumbs */
+    transition: 0.3s;
+}
+
+.main-btn:active { transform: scale(0.95); }
+
+#result { 
+    margin: 20px 0; 
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #f9fafb;
+}
+
+.history-item {
+    background: #ffffff; 
+    padding: 15px; 
+    margin-bottom: 12px; 
+    border-radius: 12px; 
+    border: 1px solid #d1fae5;
+    text-align: left;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>🌱 AgriGuard</h1>
+        <p>Scan your crop to detect diseases</p>
+        
+        <input type="file" accept="image/*" capture="camera" id="cameraInput" style="display: none;">
+        <button **class="main-btn"** onclick="document.getElementById('cameraInput').click()">📸 Scan Crop</button>
+
+        <div id="result">Waiting for scan...</div>
+        <hr> <h3>📜 Past Reports</h3>
+<button onclick="loadHistory()" style="background-color: #0ea5e9;">🔄 View History</button>
+<div id="historyList" style="text-align: left; margin-top: 20px;"></div>
+    </div>
+
+
+<script>
+    const cameraInput = document.getElementById('cameraInput');
+    const resultDiv = document.getElementById('result');
+
+    cameraInput.addEventListener('change', async function() {
+        const file = cameraInput.files[0];
+        if (!file) return;
+
+        resultDiv.innerText = "Sending photo to AI...";
+
+        // 1. Put the photo in a "virtual envelope"
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            // 2. Send the envelope to the /diagnose route in Python
+            const response = await fetch('http://127.0.0.1:5000/diagnose', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            // 3. Show what the Python brain said
+            resultDiv.innerHTML = `
+                <div style="color: blue; font-size: 20px;">${data.status}</div>
+                <p>${data.message}</p>
+            `;
+        } catch (error) {
+            resultDiv.innerText = "Error: Make sure Python is running!";
+        }
+    });
+    async function loadHistory() {
+    const historyDiv = document.getElementById('historyList');
+    historyDiv.innerHTML = "Opening the file cabinet..."; // Temporary message
+
+    try {
+        // 1. We call the Python 'door' we just made in Step 18
+        const response = await fetch('http://127.0.0.1:5000/history');
+        const data = await response.json();
+
+        historyDiv.innerHTML = ""; // Clear the 'opening' message
+
+        // 2. For every scan in the list, create a little report card
+        data.forEach(scan => {
+            const card = document.createElement('div');
+            card.style = "background: #e5e7eb; padding: 10px; margin-bottom: 5px; border-radius: 5px; border-left: 5px solid #22c55e;";
+            card.innerHTML = `
+                <b>${scan.date}</b><br>
+                Status: ${scan.status}<br>
+                <small>${scan.recommendation}</small>
+            `;
+            historyDiv.appendChild(card); // Stick the card onto the screen
+        });
+    } catch (error) {
+        historyDiv.innerText = "Could not reach the cloud!";
+    }
+}
+</script>
+</body>
+</html>
