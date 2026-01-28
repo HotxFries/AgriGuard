@@ -77,19 +77,20 @@ h1 { color: #065f46; margin-bottom: 5px; }
         <input type="file" accept="image/*" capture="camera" id="cameraInput" style="display: none;">
         <img id="preview" style="width: 100%; border-radius: 10px; display: none; margin-bottom: 15px;">
 
-<div id="loader" style="display: none; margin: 20px auto; color: #059669; font-weight: bold;">
-    <span class="spinner-icon">⚙️</span> AI is Analyzing...
-</div>
+      <div id="loader" style="display: none; margin: 20px auto; color: #059669; font-weight: bold; font-size: 18px;">
+     <span class="spinner-icon" style="display: inline-block;">⚙️</span> 
+      <span>AI is Analyzing...</span>
+     </div>
         <button class="main-btn" onclick="document.getElementById('cameraInput').click()">📸 Scan Crop</button>
 
         <div id="result">Waiting for scan...</div>
         <hr> <h3>📜 Past Reports</h3>
-<button onclick="loadHistory()" style="background-color: #0ea5e9;">🔄 View History</button>
-<div id="historyList" style="text-align: left; margin-top: 20px;"></div>
-    </div>
+     <button onclick="loadHistory()" style="background-color: #0ea5e9;">🔄 View History</button>
+     <div id="historyList" style="text-align: left; margin-top: 20px;"></div>
+     </div>
 
 
-<script>
+ <script>
  const cameraInput = document.getElementById('cameraInput');
     const resultDiv = document.getElementById('result');
 
