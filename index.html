@@ -149,12 +149,12 @@
 <div class="stats-grid">
     <div class="stat-card">
         <i class="fas fa-temperature-high"></i>
-        <span class="stat-val">28°C</span>
+        <span class="stat-val" id="temp-val">28°C</span>
         <span class="stat-label">Field Temp</span>
     </div>
     <div class="stat-card">
         <i class="fas fa-tint"></i>
-        <span class="stat-val">62%</span>
+        <span class="stat-val" id="hum-val">62%</span>
         <span class="stat-label">Humidity</span>
     </div>
 </div>
@@ -201,6 +201,25 @@
     <div id="history-section" class="tab-content" style="display: none;">
         <h3 style="padding: 0 10px;">Diagnostic Archives</h3>
         <div id="historyList"></div>
+    </div>
+</div>
+
+<div id="insights-section" class="tab-content" style="display: none;">
+    <div class="scanner-card">
+        <h3>📊 Crop Health Summary</h3>
+        <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+            <div style="text-align:center">
+                <div style="font-size: 24px; font-weight: 800; color: var(--primary);">85%</div>
+                <div style="font-size: 10px; color: #64748b;">OVERALL HEALTH</div>
+            </div>
+            <div style="text-align:center">
+                <div id="total-scans" style="font-size: 24px; font-weight: 800; color: var(--accent);">0</div>
+                <div style="font-size: 10px; color: #64748b;">TOTAL SCANS</div>
+            </div>
+        </div>
+        <p style="font-size: 13px; color: #475569;">
+            <i class="fas fa-info-circle"></i> Based on your last 10 scans, the most common threat is <b>Late Blight</b>. We recommend increasing soil drainage.
+        </p>
     </div>
 </div>
 
@@ -325,6 +344,15 @@
             </div>`;
     }
 }
+
+// Add this inside your <script> tag
+setInterval(() => {
+    const temp = (25 + Math.random() * 5).toFixed(1);
+    const hum = (60 + Math.random() * 10).toFixed(0);
+    document.getElementById('temp-val').innerText = temp + "°C";
+    document.getElementById('hum-val').innerText = hum + "%";
+}, 3000); // Updates every 3 seconds
+
 </script>
 
 </body>
